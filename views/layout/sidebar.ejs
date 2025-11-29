@@ -1,0 +1,46 @@
+<!-- Mobile Sidebar Overlay -->
+<div id="sidebar-overlay" class="fixed inset-0 bg-gray-900/50 z-40 hidden lg:hidden transition-opacity duration-300"></div>
+
+<aside id="sidebar" class="fixed lg:relative z-50 w-64 h-full bg-gray-900 text-white glass-dark transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col">
+    <div class="h-16 flex items-center justify-between px-6 border-b border-gray-800">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <i data-lucide="layout-grid" class="w-5 h-5 text-white"></i>
+            </div>
+            <span class="font-bold text-lg tracking-tight">Back Office</span>
+        </div>
+        <button id="close-sidebar" class="lg:hidden text-gray-400 hover:text-white">
+            <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto py-6 px-3 space-y-1">
+        <%
+        const navItems = [
+            { name: 'Dashboard', icon: 'layout-dashboard', path: '/' },
+            { name: 'Sales', icon: 'shopping-cart', path: '/sales' },
+            { name: 'Inventory', icon: 'package', path: '/inventory' },
+            { name: 'Expenses', icon: 'receipt', path: '/expenses' },
+            { name: 'Salaries', icon: 'dollar-sign', path: '/salaries' },
+            { name: 'Credit Customers', icon: 'credit-card', path: '/credit' },
+            { name: 'Reports', icon: 'bar-chart-3', path: '/reports' },
+            { name: 'Users', icon: 'users', path: '/users' },
+            { name: 'Settings', icon: 'settings', path: '/settings' }
+        ];
+        %>
+
+        <% navItems.forEach(item => { %>
+            <a href="<%= item.path %>" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 <%= currentPath === item.path ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'text-gray-400 hover:text-white hover:bg-gray-800' %>">
+                <i data-lucide="<%= item.icon %>" class="w-5 h-5"></i>
+                <span class="font-medium"><%= item.name %></span>
+            </a>
+        <% }) %>
+    </nav>
+
+    <div class="p-4 border-t border-gray-800">
+        <a href="/logout" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white transition-colors cursor-pointer">
+            <i data-lucide="log-out" class="w-5 h-5"></i>
+            <span class="font-medium">Logout</span>
+        </a>
+    </div>
+</aside>

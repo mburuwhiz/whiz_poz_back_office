@@ -1,0 +1,84 @@
+<!-- Sales Page -->
+<div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+        <h2 class="text-2xl font-bold text-gray-900">Sales & Transactions</h2>
+        <p class="text-sm text-gray-500">View and manage your transaction history.</p>
+    </div>
+    <div class="flex gap-2">
+        <button class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors shadow-sm">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            Export
+        </button>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 mb-6 flex flex-wrap gap-4">
+    <div class="flex-1 min-w-[200px]">
+        <div class="relative">
+            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+            <input type="text" placeholder="Search transactions..." class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+        </div>
+    </div>
+    <select class="px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-600 focus:ring-2 focus:ring-blue-500 outline-none">
+        <option value="">All Statuses</option>
+        <option value="completed">Completed</option>
+        <option value="refunded">Refunded</option>
+    </select>
+    <input type="date" class="px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-600 focus:ring-2 focus:ring-blue-500 outline-none">
+</div>
+
+<!-- Table -->
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+            <thead class="bg-gray-50 border-b border-gray-100">
+                <tr>
+                    <th class="px-6 py-4 font-medium text-gray-500">Transaction ID</th>
+                    <th class="px-6 py-4 font-medium text-gray-500">Date</th>
+                    <th class="px-6 py-4 font-medium text-gray-500">Cashier</th>
+                    <th class="px-6 py-4 font-medium text-gray-500">Items</th>
+                    <th class="px-6 py-4 font-medium text-gray-500">Amount</th>
+                    <th class="px-6 py-4 font-medium text-gray-500">Payment</th>
+                    <th class="px-6 py-4 font-medium text-gray-500 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                <% if (transactions && transactions.length > 0) { %>
+                    <% transactions.forEach(trx => { %>
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4 font-medium text-gray-900">#<%= trx.transactionId ? trx.transactionId.slice(-6) : 'N/A' %></td>
+                        <td class="px-6 py-4 text-gray-500"><%= new Date(trx.date).toLocaleString() %></td>
+                        <td class="px-6 py-4 text-gray-900"><%= trx.cashier || 'N/A' %></td>
+                        <td class="px-6 py-4 text-gray-500"><%= trx.items ? trx.items.length : 0 %> items</td>
+                        <td class="px-6 py-4 font-medium text-gray-900">Ksh. <%= trx.totalAmount %></td>
+                        <td class="px-6 py-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <%= trx.paymentMethod %>
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <button class="text-gray-400 hover:text-blue-600 transition-colors">
+                                <i data-lucide="eye" class="w-4 h-4"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="7" class="px-6 py-4 text-center text-gray-500">No transactions found.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+        <p class="text-sm text-gray-500">Showing recent transactions</p>
+        <div class="flex gap-2">
+            <button class="px-3 py-1 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-50">Previous</button>
+            <button class="px-3 py-1 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50">Next</button>
+        </div>
+    </div>
+</div>

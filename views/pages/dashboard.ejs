@@ -1,0 +1,142 @@
+<!-- Dashboard -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Stats Cards -->
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+        <div class="flex justify-between items-start">
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Total Sales</p>
+                <h3 class="text-2xl font-bold text-gray-900">Ksh. <%= stats.totalSales.toLocaleString() %></h3>
+            </div>
+            <div class="p-2 bg-green-50 text-green-600 rounded-lg">
+                <i data-lucide="trending-up" class="w-5 h-5"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+        <div class="flex justify-between items-start">
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Transactions</p>
+                <h3 class="text-2xl font-bold text-gray-900"><%= stats.transactionCount.toLocaleString() %></h3>
+            </div>
+            <div class="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+        <div class="flex justify-between items-start">
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Inventory Value</p>
+                <h3 class="text-2xl font-bold text-gray-900">Ksh. <%= stats.inventoryValue.toLocaleString() %></h3>
+            </div>
+            <div class="p-2 bg-purple-50 text-purple-600 rounded-lg">
+                <i data-lucide="package" class="w-5 h-5"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+        <div class="flex justify-between items-start">
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Credit Due</p>
+                <h3 class="text-2xl font-bold text-gray-900">Ksh. <%= stats.creditDue.toLocaleString() %></h3>
+            </div>
+            <div class="p-2 bg-orange-50 text-orange-600 rounded-lg">
+                <i data-lucide="alert-circle" class="w-5 h-5"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Dashboard Content -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- Sales Chart Placeholder -->
+    <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-bold text-gray-900">Sales Overview</h3>
+            <select class="text-sm border-gray-200 rounded-lg text-gray-500 focus:ring-blue-500 focus:border-blue-500">
+                <option>Last 7 Days</option>
+                <option>Last 30 Days</option>
+                <option>This Year</option>
+            </select>
+        </div>
+        <div class="h-80 w-full">
+            <canvas id="salesChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        const chartData = <%- typeof chartData !== 'undefined' ? chartData : '{"labels":[], "data":[]}' %>;
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartData.labels,
+                datasets: [{
+                    label: 'Sales (Ksh)',
+                    data: chartData.data,
+                    borderColor: 'rgb(37, 99, 235)',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            display: true,
+                            drawBorder: false
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+    <!-- Recent Transactions -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Recent Activity</h3>
+        <div class="space-y-4">
+            <% if (recentTransactions && recentTransactions.length > 0) { %>
+                <% recentTransactions.forEach(trx => { %>
+                <div class="flex items-center gap-4 pb-4 border-b border-gray-100 last:border-0 last:pb-0">
+                    <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                        <i data-lucide="receipt" class="w-5 h-5"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-900">Sale #<%= trx.transactionId ? trx.transactionId.slice(-6) : 'N/A' %></p>
+                        <p class="text-xs text-gray-500"><%= new Date(trx.date).toLocaleString() %></p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-bold text-gray-900">Ksh. <%= trx.totalAmount %></p>
+                        <p class="text-xs text-green-600"><%= trx.paymentMethod %></p>
+                    </div>
+                </div>
+                <% }) %>
+            <% } else { %>
+                <p class="text-gray-500 text-sm">No recent transactions.</p>
+            <% } %>
+        </div>
+        <a href="/sales" class="block text-center w-full mt-6 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+            View All Transactions
+        </a>
+    </div>
+</div>
