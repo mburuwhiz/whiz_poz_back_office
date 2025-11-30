@@ -112,4 +112,8 @@ const startServer = (port) => {
   });
 };
 
-startServer(parseInt(DEFAULT_PORT));
+if (require.main === module) {
+  startServer(parseInt(DEFAULT_PORT));
+}
+
+module.exports = app;
